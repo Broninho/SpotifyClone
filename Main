@@ -1,0 +1,215 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(SpotifyCloneApp());
+
+class SpotifyCloneApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Clone do Spotify',
+      theme: ThemeData(
+        primaryColor: Colors.black,
+        scaffoldBackgroundColor: Colors.black,
+        textTheme: TextTheme(
+          headlineLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          headlineMedium: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          bodyLarge: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(color: Colors.white),
+        ),
+      ),
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: ListView(
+          padding: EdgeInsets.all(16),
+          children: [
+            Text('Boa noite', style: Theme.of(context).textTheme.headlineLarge),
+            SizedBox(height: 20),
+            GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              children: List.generate(6, (index) {
+                return MiniAlbum(title: 'Mini Album ${index + 1}');
+              }),
+            ),
+            SizedBox(height: 20),
+            Text('Tocados recentemente', style: Theme.of(context).textTheme.headlineMedium),
+            SizedBox(height: 10),
+            Container(
+              height: 160,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.only(right: 16),
+                    child: AlbumCard(title: 'Album Recente ${index + 1}'),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 20),
+            Text('Novos lancamentos', style: Theme.of(context).textTheme.headlineMedium),
+            SizedBox(height: 10),
+            Container(
+              height: 160,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.only(right: 16),
+                    child: AlbumCard(title: 'Novo Lancamento ${index + 1}'),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          MiniPlayer(),
+          BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Inicio',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.search),
+                label: 'Buscar',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.library_music),
+                label: 'Sua Biblioteca',
+              ),
+            ],
+            backgroundColor: Colors.grey[900],
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.grey,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MiniAlbum extends StatelessWidget {
+  final String title;
+
+  MiniAlbum({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[800],
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            color: Colors.grey[700],
+            child: Icon(Icons.music_note, color: Colors.white),
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AlbumCard extends StatelessWidget {
+  final String title;
+
+  AlbumCard({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 120,
+          height: 120,
+          color: Colors.grey[800],
+          child: Icon(Icons.album, color: Colors.white, size: 50),
+        ),
+        SizedBox(height: 8),
+        Text(
+          title,
+          style: TextStyle(fontWeight: FontWeight.bold),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+}
+
+class MiniPlayer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      color: Colors.grey[900],
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            color: Colors.grey[800],
+            child: Icon(Icons.music_note, color: Colors.white, size: 20),
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Musica Tocando Agora', style: TextStyle(fontSize: 14)),
+                Text('Nome do Artista', style: TextStyle(fontSize: 12, color: Colors.grey)),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.play_arrow, color: Colors.white),
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+  }
+}
